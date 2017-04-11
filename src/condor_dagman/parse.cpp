@@ -548,6 +548,17 @@ parse_subdag( Dag *dag,
 	return false;
 }
 
+static const char* next_possibly_quoted_token( void )
+{
+	char *remainder = strtok( NULL, "" );
+	while ( remainder[0] == ' ' || remainder[0] == '\t' )
+		remainder++;
+	if ( remainder[0] == '"' )
+		return strtok( ++remainder, "\"" );
+	else
+		return strtok( remainder, DELIMITERS );
+}
+
 //-----------------------------------------------------------------------------
 static bool 
 parse_node( Dag *dag, 
@@ -587,7 +598,7 @@ parse_node( Dag *dag,
 	nodeName = tmpNodeName.Value();
 
 		// next token is the submit file name
-	const char *submitFile = strtok( NULL, DELIMITERS );
+	const char *submitFile = next_possibly_quoted_token();
 	if ( !submitFile ) {
 		debug_printf( DEBUG_QUIET, "ERROR: %s (line %d): no submit file "
 					"specified\n", dagFile, lineNum );
@@ -607,7 +618,7 @@ parse_node( Dag *dag,
 				return false;
 			}
 
-			directory = strtok( NULL, DELIMITERS );
+			directory = next_possibly_quoted_token();
 			if ( !directory ) {
 				debug_printf( DEBUG_QUIET, "ERROR: %s (line %d): no directory "
 							"specified after DIR keyword\n", dagFile, lineNum );
