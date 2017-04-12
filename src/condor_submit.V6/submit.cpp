@@ -747,7 +747,6 @@ bool 	check_requirements( char const *orig, MyString &answer );
 void 	check_open( const char *name, int flags );
 void 	usage();
 void 	init_params();
-int 	whitespace( const char *str);
 void 	compress( MyString &path );
 char const*full_path(const char *name, bool use_iwd=true);
 void 	get_time_conv( int &hours, int &minutes );
@@ -4282,14 +4281,6 @@ SetStdFile( int which_file )
 			exit( 1 );
 		}
 	}
-	
-	if( whitespace(macro_value) ) 
-	{
-		fprintf( stderr,"\nERROR: The '%s' takes exactly one argument (%s)\n", 
-				 generic_name, macro_value );
-		DoCleanup(0,0,NULL);
-		exit( 1 );
-	}	
 
 	MyString tmp = macro_value;
 	if ( check_and_universalize_path(tmp) != 0 ) {
@@ -9633,18 +9624,6 @@ init_params()
 
 #ifdef USE_SUBMIT_UTILS
 #else
-int
-whitespace( const char *str)
-{
-	while( *str ) {
-		if( isspace(*str++) ) {
-			return( 1 );
-		}
-	}
-
-	return( 0 );
-}
-
 void
 compress( MyString &path )
 {
